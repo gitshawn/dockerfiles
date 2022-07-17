@@ -22,7 +22,7 @@ jobs:
           DEPLOYREPOLOWER=${DEPLOYREPO,,}
             for d in $GITHUB_WORKSPACE/this_repo/*/; do
               echo "$d"
-              DIRWITHOUTTRAILINGSLASH=${d/%//}
+              DIRWITHOUTTRAILINGSLASH=${d%/}
               REPONAME=${DIRWITHOUTTRAILINGSLASH##*/}
               echo "$REPONAME"
               echo -= 💻 Found "$FILENAME" =-
