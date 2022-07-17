@@ -21,11 +21,9 @@ jobs:
           DEPLOYREPO=${GITHUB_REPOSITORY##*/}
           DEPLOYREPOLOWER=${DEPLOYREPO,,}
             for d in $GITHUB_WORKSPACE/this_repo/*/; do
-              if compgen -G "$GITHUB_WORKSPACE/this_repo/*.dockerfile" > /dev/null ; then
-                echo "$d"
-                DIR_WITHOUT_TRAILING_SLASH=${d%/}
-                REPONAME=${DIR_WITHOUT_TRAILING_SLASH##*/}
-                echo "$REPONAME"
+              DIR_WITHOUT_TRAILING_SLASH=${d%/}
+              REPONAME=${DIR_WITHOUT_TRAILING_SLASH##*/}
+              if compgen -G "$DIR_WITHOUT_TRAILING_SLASH/dockerfile" > /dev/null ; then
                 echo -= 💻 Found "$REPONAME" =-
                 cd "$d"
                 echo -= 💻 Login to ECR via Docker client =-
