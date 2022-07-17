@@ -21,16 +21,18 @@ jobs:
           DEPLOYREPO=${GITHUB_REPOSITORY##*/}
           DEPLOYREPOLOWER=${DEPLOYREPO,,}
             for d in $GITHUB_WORKSPACE/this_repo/*/; do
-              echo "$d"
-              DIRWITHOUTTRAILINGSLASH=${d%/}
-              REPONAME=${DIRWITHOUTTRAILINGSLASH##*/}
-              echo "$REPONAME"
-              echo -= 💻 Found "$FILENAME" =-
-              cd "$d"
-              echo -= 💻 Login to ECR via Docker client =-
-              echo secrettoke | docker login -u sfriedel --password-stdin
-              echo -= 💻 Build "$FILENAME" =-
-              docker build -t sfriedel/$REPONAME:latest .
-              echo -= 💻 Push "$FILENAME" =-
-              docker push sfriedel/$REPONAME:latest
+              if compgen -G "$GITHUB_WORKSPACE/this_repo/*.dockerfile" > /dev/null ; then
+                echo "$d"
+                DIR_WITHOUT_TRAILING_SLASH=${d%/}
+                REPONAME=${DIR_WITHOUT_TRAILING_SLASH##*/}
+                echo "$REPONAME"
+                echo -= 💻 Found "$REPONAME" =-
+                cd "$d"
+                echo -= 💻 Login to ECR via Docker client =-
+                echo ${{ secrets.DOCKER_TOKEN }} | docker login -u sfriedel --password-stdin
+                echo -= 💻 Build "$REPONAME" =-
+                docker build -t sfriedel/$REPONAME:latest .
+                echo -= 💻 Push "$REPONAME" =-
+                docker push sfriedel/$REPONAME:latest
+              fi
             done
