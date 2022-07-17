@@ -20,21 +20,18 @@ jobs:
         run: |
           DEPLOYREPO=${GITHUB_REPOSITORY##*/}
           DEPLOYREPOLOWER=${DEPLOYREPO,,}
-          if compgen -G "$GITHUB_WORKSPACE/this_repo/*.dockerfile" > /dev/null ; then
             for d in $GITHUB_WORKSPACE/this_repo/*/; do
               echo "$d"
+              REPONAME=${d##*/}
+              echo "$REPONAME"
               echo -= 💻 Found "$FILENAME" =-
-              cd $d
-              echo -= 💻 Get repo name =-
-              ECRREPO=$(aws ecr describe-repositories --query 'repositories[].repositoryUri[]' --region $AWS_DEFAULT_REGION | grep $DEPLOYREPOLOWER-$FILENAMEWITHOUTEXTENSION | sed 's/"//g' | sed 's/,//g' | sed -r 's/\s+//g')
-              REPOHOSTNAME=$(echo $ECRREPO | cut -f1 -d/)
+              cd "$d"
               echo -= 💻 Login to ECR via Docker client =-
-              aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOHOSTNAME
+              docker login -u sfriedel --password-stdin
               echo -= 💻 Build "$FILENAME" =-
               docker build -t $ECRREPO:latest -f $FILENAME .
               echo -= 💻 Push "$FILENAME" =-
+              docker push sfriedel/openvscode-plus:latest
               docker push $ECRREPO:latest
             done
-          else
-            echo "-= 🔨 There are no dockerfiles, skipping step =-"
-          fi
+
