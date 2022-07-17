@@ -1,4 +1,4 @@
-name: DockerBuildAndPush
+name: Docker Build And Push
 
 on:
   push:
@@ -9,21 +9,32 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      -
-        name: Login to DockerHub
-        uses: docker/login-action@v2
+    
+      - name: "⤵️ Clone the product repo"
+        uses: actions/checkout@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      -
-        name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          tags: user/app:latest
+          path: 'this_repo'
+          ref: ${{ github.ref_name }}
+          
+      - name: "🛠 Build and push dockerfile(s)"
+        run: |
+          DEPLOYREPO=${GITHUB_REPOSITORY##*/}
+          DEPLOYREPOLOWER=${DEPLOYREPO,,}
+          if compgen -G "$GITHUB_WORKSPACE/this_repo/*.dockerfile" > /dev/null ; then
+            for d in $GITHUB_WORKSPACE/this_repo/*/; do
+              echo "$d"
+              echo -= 💻 Found "$FILENAME" =-
+              cd $d
+              echo -= 💻 Get repo name =-
+              ECRREPO=$(aws ecr describe-repositories --query 'repositories[].repositoryUri[]' --region $AWS_DEFAULT_REGION | grep $DEPLOYREPOLOWER-$FILENAMEWITHOUTEXTENSION | sed 's/"//g' | sed 's/,//g' | sed -r 's/\s+//g')
+              REPOHOSTNAME=$(echo $ECRREPO | cut -f1 -d/)
+              echo -= 💻 Login to ECR via Docker client =-
+              aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOHOSTNAME
+              echo -= 💻 Build "$FILENAME" =-
+              docker build -t $ECRREPO:latest -f $FILENAME .
+              echo -= 💻 Push "$FILENAME" =-
+              docker push $ECRREPO:latest
+            done
+          else
+            echo "-= 🔨 There are no dockerfiles, skipping step =-"
+          fi
