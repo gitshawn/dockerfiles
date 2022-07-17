@@ -1,0 +1,11 @@
+FROM gitpod/openvscode-server
+RUN apt update \
+&& apt install \
+wget \
+curl \
+postgresql-client \
+&& curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+&& unzip awscliv2.zip
+&& ./aws/install \
+&& rm awscliv2.zip \
+&& rm -rf awscli
