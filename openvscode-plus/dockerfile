@@ -5,8 +5,13 @@ wget \
 curl \
 postgresql-client \
 unzip \
-&& curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+&& rm -rf /var/lib/apt/lists/*
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
 && unzip awscliv2.zip \
 && sudo ./aws/install \
 && rm awscliv2.zip \
 && rm -rf ./aws
+RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
+RUN git clone --recursive https://github.com/akinomyoga/ble.sh.git \
+&& make -C ble.sh install PREFIX=~/.local \
+&& echo 'source ~/.local/share/blesh/ble.sh' >> ~/.bashrc
