@@ -22,16 +22,15 @@ jobs:
           DEPLOYREPOLOWER=${DEPLOYREPO,,}
             for d in $GITHUB_WORKSPACE/this_repo/*/; do
               echo "$d"
-              REPONAME=${d##*/}
+              DIRWITHOUTTRAILINGSLASH=${d/%//}
+              REPONAME=${DIRWITHOUTTRAILINGSLASH##*/}
               echo "$REPONAME"
               echo -= 💻 Found "$FILENAME" =-
               cd "$d"
               echo -= 💻 Login to ECR via Docker client =-
-              docker login -u sfriedel --password-stdin
+              echo secrettoke | docker login -u sfriedel --password-stdin
               echo -= 💻 Build "$FILENAME" =-
-              docker build -t $ECRREPO:latest -f $FILENAME .
+              docker build -t sfriedel/$REPONAME:latest .
               echo -= 💻 Push "$FILENAME" =-
-              docker push sfriedel/openvscode-plus:latest
-              docker push $ECRREPO:latest
+              docker push sfriedel/$REPONAME:latest
             done
-
