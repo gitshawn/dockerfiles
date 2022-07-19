@@ -2,15 +2,16 @@ FROM gitpod/openvscode-server
 RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo bash - \
 && sudo apt update \
 && sudo apt install -y \
-wget \
+bash-completion \
 curl \
-postgresql-client \
-unzip \
+gawk \
 gcc \
 g++ \
 make \
 nodejs \
-gawk \
+postgresql-client \
+unzip \
+wget \
 && sudo rm -rf /var/lib/apt/lists/*
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
 && unzip -q awscliv2.zip \
