@@ -1,10 +1,8 @@
 FROM gitpod/openvscode-server
-RUN echo "deb http://deb.volian.org/volian/ scar main" | sudo tee /etc/apt/sources.list.d/volian-archive-scar-unstable.list \
-&& wget -qO - https://deb.volian.org/volian/scar.key | sudo tee /etc/apt/trusted.gpg.d/volian-archive-scar-unstable.gpg > /dev/null \
-&& curl -sL https://deb.nodesource.com/setup_14.x | sudo bash - \
-&& sudo apt update \
-&& sudo apt -y install nala \
-&& sudo nala --assume-yes install \
+USER root
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+&& apt update \
+&& apt -y install \
 bash-completion \
 curl \
 gawk \
@@ -21,6 +19,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 && sudo ./aws/install \
 && rm awscliv2.zip \
 && rm -rf ./aws
+USER openvscode-server
 RUN git clone --recursive https://github.com/akinomyoga/ble.sh.git \
 && make -C ble.sh install PREFIX=~/.local \
 && echo 'source ~/.local/share/blesh/ble.sh' >> ~/.bashrc
