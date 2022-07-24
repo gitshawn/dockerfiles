@@ -3,7 +3,7 @@ RUN echo "deb http://deb.volian.org/volian/ scar main" | sudo tee /etc/apt/sourc
 && wget -qO - https://deb.volian.org/volian/scar.key | sudo tee /etc/apt/trusted.gpg.d/volian-archive-scar-unstable.gpg > /dev/null \
 && curl -sL https://deb.nodesource.com/setup_14.x | sudo bash - \
 && sudo apt update \
-&& sudo apt install nala \
+&& sudo apt -y install nala \
 && sudo nala -y install \
 bash-completion \
 curl \
