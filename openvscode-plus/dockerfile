@@ -3,7 +3,7 @@ USER root
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
 && apt update \
 && apt -y install \
-bash-completion \
+# bash-completion \
 curl \
 gawk \
 gcc \
@@ -20,7 +20,16 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 && rm awscliv2.zip \
 && rm -rf ./aws
 USER openvscode-server
-RUN git clone --recursive https://github.com/akinomyoga/ble.sh.git \
-&& make -C ble.sh install PREFIX=~/.local \
-&& echo 'source ~/.local/share/blesh/ble.sh' >> ~/.bashrc \
-&& /bin/bash -c 'source /etc/bash_completion'
+# RUN git clone --recursive https://github.com/akinomyoga/ble.sh.git \
+# && make -C ble.sh install PREFIX=~/.local \
+# && echo 'source ~/.local/share/blesh/ble.sh' >> ~/.bashrc \
+# && /bin/bash -c 'source /etc/bash_completion'
+RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.2/zsh-in-docker.sh)" -- \
+    -t https://github.com/denysdovhan/spaceship-prompt \
+    -a 'SPACESHIP_PROMPT_ADD_NEWLINE="false"' \
+    -a 'SPACESHIP_PROMPT_SEPARATE_LINE="false"' \
+    -p git \
+    -p ssh-agent \
+    -p aws \
+    -p https://github.com/zsh-users/zsh-autosuggestions \
+    -p https://github.com/zsh-users/zsh-completions
