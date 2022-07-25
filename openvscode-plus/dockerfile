@@ -8,8 +8,10 @@ curl \
 gawk \
 gcc \
 g++ \
+less \
 make \
 nodejs \
+openssh-client \
 postgresql-client \
 unzip \
 wget \
