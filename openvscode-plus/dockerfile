@@ -22,4 +22,5 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 USER openvscode-server
 RUN git clone --recursive https://github.com/akinomyoga/ble.sh.git \
 && make -C ble.sh install PREFIX=~/.local \
-&& echo 'source ~/.local/share/blesh/ble.sh' >> ~/.bashrc
+&& echo 'source ~/.local/share/blesh/ble.sh' >> ~/.bashrc \
+&& source /etc/bash_completion
