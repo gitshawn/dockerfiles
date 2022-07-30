@@ -8,6 +8,7 @@
 <body>
     <h1>Hello World</h1>
     <p>Current Date and Time is <span id='date-time'></span>.</p>
+    <p>This page will auto-refresh in 5 seconds</p>
 </body>
 
 </html>
@@ -15,4 +16,10 @@
 <script>
     var dt = new Date();
     document.getElementById('date-time').innerHTML = dt;
+
+    function autoRefresh() {
+        window.location = window.location.href;
+    }
+    setInterval('autoRefresh()', 5000);
+
 </script>
