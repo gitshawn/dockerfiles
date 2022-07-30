@@ -3,6 +3,7 @@
 
 <head>
     <title>Hello World</title>
+    <meta http-equiv="refresh" content="5">
 </head>
 
 <body>
@@ -16,10 +17,4 @@
 <script>
     var dt = new Date();
     document.getElementById('date-time').innerHTML = dt;
-
-    function autoRefresh() {
-        window.location = window.location.href;
-    }
-    setInterval('autoRefresh()', 5000);
-
 </script>
