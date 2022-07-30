@@ -1,0 +1,10 @@
+FROM public.ecr.aws/docker/library/busybox:stable
+ENV PORT=8080
+COPY 2048 /www
+
+EXPOSE $PORT
+
+HEALTHCHECK CMD nc -z localhost $PORT
+
+# Create a basic webserver and run it until the container is stopped
+CMD echo "httpd started" && trap "exit 0;" TERM INT; httpd -v -p $PORT -h /www -f & wait
